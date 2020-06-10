@@ -31,7 +31,7 @@ fun tidyUp(origin: File, target: File) {
         list = origin.listFiles()!!
         val tmp = target.listFiles().last().listFiles().size
         for (i in tmp until 200) {
-            if (list.size == i) {
+            if (list.size == i - tmp) {
                 return
             }
             list[i - tmp].apply {
