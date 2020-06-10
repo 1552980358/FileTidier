@@ -1,0 +1,16 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="out.jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/out_jar</output-path>
+    <root id="archive" name="untitled.main.jar">
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/src/main/META-INF/MANIFEST.MF" />
+      </element>
+      <element id="module-output" name="untitled.main" />
+      <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib-jdk8/1.4-M2/b104b1e104def0bfede384d62d838a1fac83cdf7/kotlin-stdlib-jdk8-1.4-M2.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib-jdk7/1.4-M2/c7b7714375635f2c4e7756260d245b7d8630c7d1/kotlin-stdlib-jdk7-1.4-M2.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib/1.4-M2/fe202588710b343e23b63fcca12d2dcae77608eb/kotlin-stdlib-1.4-M2.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib-common/1.4-M2/83a2b1b2994ac4f8857864ba98987a246e2e9a18/kotlin-stdlib-common-1.4-M2.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains/annotations/13.0/919f0dfe192fb4e063e7dacadee7f8bb9a2672a9/annotations-13.0.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
