@@ -6,7 +6,7 @@ fun main(args: Array<String>) {
     
     if (args.isEmpty()) {
         // Use with IDE
-        rearrange(File("E:\\test1"), File("E:\\test2"))
+        Runtime.getRuntime().exec("pause.exe").waitFor()
         return
     }
     when (args[0]) {
@@ -22,7 +22,7 @@ fun main(args: Array<String>) {
                 println("请传入目录")
                 return
             }
-            resetName(File(args[1]))
+            reset(File(args[1]))
         }
         "rearrange" -> {
             if (args.size < 3) {
@@ -41,7 +41,7 @@ fun main(args: Array<String>) {
 fun tidyUp(origin: File, target: File) {
     var list: Array<File>
     if (target.listFiles().isNotEmpty() && target.listFiles().last().listFiles().size < 500) {
-        println("进入目录: ${target.listFiles().last().absolutePath}")
+        println("[!]进入目录: ${target.listFiles().last().absolutePath}")
         list = origin.listFiles()!!
         val tmp = target.listFiles().last().listFiles().size
         for (i in tmp until 500) {
@@ -63,7 +63,7 @@ fun tidyUp(origin: File, target: File) {
     val rootSize = target.listFiles().size
     for (i in rootSize until (list.size / 500) + rootSize) {
         tmp = File(target, getNum(i)).apply { mkdirs() }
-        println("创建目录: ${tmp.absolutePath}")
+        println("[✓]创建目录: ${tmp.absolutePath}")
         for (j in 0 until 500) {
             list[j + ((i - rootSize) * 500)].apply {
                 copyTo(File(tmp, getName(j, extension)))
@@ -76,20 +76,22 @@ fun tidyUp(origin: File, target: File) {
     }
     
     tmp = File(target, getNum(target.listFiles().size)).apply { mkdirs() }
-    println("创建目录: ${tmp.absolutePath}")
+    println("[✓]创建目录: ${tmp.absolutePath}")
     // 刷新
     list = origin.listFiles()!!
     for (i in list.indices) {
         list[i].apply {
             copyTo(File(tmp, getName(i, extension)))
-            println("${getNum(i)}: " + name + "\t\t-> " + getName(i, extension))
+            println("[!]${getNum(i)}: " + name + " -> " + getName(i, extension))
             delete()
+            println("[✓]已删除: ${getName(i, extension)}")
         }
     }
     println("====================")
+    println()
 }
 
-fun resetName(file: File) {
+fun reset(file: File) {
     file.listFiles().also { list ->
         if (list.isNullOrEmpty()) {
             return
@@ -97,14 +99,15 @@ fun resetName(file: File) {
         
         for (i in list.indices) {
             if (list[i].name == getName(i, list[i].extension)) {
-                println(getNum(i) + ": " + list[i].name + ".......通过")
+                println("[✓]通过: " + list[i].name)
                 continue
             }
         
             list[i].apply {
                 copyTo(File(file, getName(i, extension)))
-                println(getNum(i) + ": " + list[i].name + " -> " + getName(i, extension))
+                println("[!]" + name + " -> " + getName(i, extension))
                 delete()
+                println("[✓]已删除: ${getName(i, extension)}")
             }
         
         }
@@ -120,21 +123,30 @@ fun addExtension(input: File, ext: String) {
 
 fun rearrange(origin: File, target: File) {
     val targetList = target.listFiles()
+    var list: Array<File>?
     for (i in targetList.indices) {
-        val list = targetList[i].listFiles()
+        list = targetList[i].listFiles()
+        if (list.size == 500) {
+            continue
+        }
+        if (list.isEmpty()) {
+            targetList[i].delete()
+            continue
+        }
         for (j in list.indices) {
             list[j].apply {
                 copyTo(File(origin, targetList[i].name + '_' + getNum(j) + ".$extension"))
-                println(name + " -> " + targetList[i].name + '_' + getNum(j) + ".$extension")
+                println("[!]" + name + " -> " + targetList[i].name + '_' + getNum(j) + ".$extension")
                 delete()
+                println("[✓]已删除: $name")
             }
         }
-        println(target.listFiles()[i].name + ".......删除")
+        println("[✓]已删除: " + targetList[i].name)
         targetList[i].delete()
     }
     target.delete()
     target.mkdirs()
-    println("重置完成, 进入重新分配")
+    println("[✓]重置完成, 进入重新分配")
     println("====================")
     println()
 }
