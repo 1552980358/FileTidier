@@ -3,6 +3,7 @@
 import java.io.File
 import java.net.URL
 import java.util.ArrayList
+import javax.sql.rowset.spi.SyncResolver
 
 fun main(args: Array<String>) {
     if (args.isEmpty()) {
@@ -37,9 +38,16 @@ fun main(args: Array<String>) {
                 print("请传入输出目录")
                 return
             }
-            print("请输入链接: ")
-            downloadTGGraph(URL(System.`in`.bufferedReader().readLine()), File(args[1]))
-            tidyUp(File(args[1]), File(args[2]))
+            var link: String
+            while (true) {
+                print("请输入链接: ")
+                link = System.`in`.bufferedReader().readLine()
+                if (link.isEmpty()) {
+                    break
+                }
+                downloadTGGraph(URL(link), File(args[1]))
+                tidyUp(File(args[1]), File(args[2]))
+            }
         }
     }
     
@@ -103,6 +111,7 @@ private fun tidyUp(origin: File, target: File) {
             println("[OK]已删除: ${getName(i, extension)}")
         }
     }
+    
 }
 
 private fun reset(file: File) {
