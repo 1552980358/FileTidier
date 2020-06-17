@@ -43,12 +43,13 @@ fun main(args: Array<String>) {
         }
     }
     
+    printComplete()
 }
 
-fun tidyUp(origin: File, target: File) {
+private fun tidyUp(origin: File, target: File) {
     var list: Array<File>
     if (target.listFiles().isNotEmpty() && target.listFiles().last().listFiles().size < 500) {
-        println("[!]进入目录: ${target.listFiles().last().absolutePath}")
+        println("[IN]进入目录: ${target.listFiles().last().absolutePath}")
         list = origin.listFiles()!!
         val tmp = target.listFiles().last().listFiles().size
         for (i in tmp until 500) {
@@ -57,15 +58,18 @@ fun tidyUp(origin: File, target: File) {
             }
             list[i - tmp].apply {
                 copyTo(File(target.listFiles().last(), getName(i, extension)))
-                println("${getNum(i)}: " + name + "\t\t-> " + getName(i, extension))
+                println("[IN]${getNum(i)}: " + name + " -> " + getName(i, extension))
                 delete()
+                println("[OK]已删除: ${getName(i, extension)}")
             }
         }
-        println("====================")
-        println()
     }
     // 刷新
     list = origin.listFiles()!!
+    if (list.isEmpty()) {
+        return
+    }
+    printHyphen()
     var tmp: File
     val rootSize = target.listFiles().size
     for (i in rootSize until (list.size / 500) + rootSize) {
@@ -74,15 +78,19 @@ fun tidyUp(origin: File, target: File) {
         for (j in 0 until 500) {
             list[j + ((i - rootSize) * 500)].apply {
                 copyTo(File(tmp, getName(j, extension)))
-                println("[!]${getNum(j)}: " + name + " -> " + getName(j, extension))
+                println("[IN]${getNum(j)}: " + name + " -> " + getName(j, extension))
                 delete()
-                println("[OK]已删除: ${getName(j, extension)}")
+                println("[OK]已删除: $absolutePath")
             }
         }
-        println("====================")
-        println()
     }
     
+    // 刷新
+    list = origin.listFiles()!!
+    if (list.isEmpty()) {
+        return
+    }
+    printHyphen()
     tmp = File(target, getNum(target.listFiles().size)).apply { mkdirs() }
     println("[OK]创建目录: ${tmp.absolutePath}")
     // 刷新
@@ -90,16 +98,14 @@ fun tidyUp(origin: File, target: File) {
     for (i in list.indices) {
         list[i].apply {
             copyTo(File(tmp, getName(i, extension)))
-            println("[!]${getNum(i)}: " + name + " -> " + getName(i, extension))
+            println("[IN]${getNum(i)}: " + name + " -> " + getName(i, extension))
             delete()
             println("[OK]已删除: ${getName(i, extension)}")
         }
     }
-    println("====================")
-    println()
 }
 
-fun reset(file: File) {
+private fun reset(file: File) {
     file.listFiles().also { list ->
         if (list.isNullOrEmpty()) {
             return
@@ -113,23 +119,24 @@ fun reset(file: File) {
             
             list[i].apply {
                 copyTo(File(file, getName(i, extension)))
-                println("[!]" + name + " -> " + getName(i, extension))
+                println("[IN]" + name + " -> " + getName(i, extension))
                 delete()
-                println("[OK]已删除: ${getName(i, extension)}")
+                println("[OK]已删除: $absolutePath")
             }
             
         }
     }
+    
 }
 
-fun addExtension(input: File, ext: String) {
+private fun addExtension(input: File, ext: String) {
     val list = input.listFiles()
     list.forEach {
         it.renameTo(File(input.absolutePath + ".$ext"))
     }
 }
 
-fun rearrange(origin: File, target: File) {
+private fun rearrange(origin: File, target: File) {
     val targetList = target.listFiles()
     var list: Array<File>?
     for (i in targetList.indices) {
@@ -144,22 +151,21 @@ fun rearrange(origin: File, target: File) {
         for (j in list.indices) {
             list[j].apply {
                 copyTo(File(origin, targetList[i].name + '_' + getNum(j) + ".$extension"))
-                println("[!]" + name + " -> " + targetList[i].name + '_' + getNum(j) + ".$extension")
+                println("[IN]" + name + " -> " + targetList[i].name + '_' + getNum(j) + ".$extension")
                 delete()
-                println("[OK]已删除: $name")
+                println("[OK]已删除: $absolutePath")
             }
         }
-        println("[OK]已删除: " + targetList[i].name)
+        println("[OK]已删除: " + targetList[i].absolutePath)
         targetList[i].delete()
     }
     target.delete()
     target.mkdirs()
     println("[OK]重置完成, 进入重新分配")
-    println("====================")
-    println()
+    printHyphen()
 }
 
-fun downloadTGGraph(url: URL, target: File) {
+private fun downloadTGGraph(url: URL, target: File) {
     val link = ArrayList<String>()
     val tmpString = StringBuilder()
     var start: Boolean
@@ -197,7 +203,7 @@ fun downloadTGGraph(url: URL, target: File) {
         }
     }
     link.forEach { line ->
-        println("[!]${line.substring(line.lastIndexOf(if (line.contains("\\")) "\\" else "/") + 1)}")
+        println("[IN]${line.substring(line.lastIndexOf(if (line.contains("\\")) "\\" else "/") + 1)}")
         File(target, line.substring(line.lastIndexOf(if (line.contains("\\")) "\\" else "/") + 1))
             .apply {
                 createNewFile()
@@ -206,10 +212,18 @@ fun downloadTGGraph(url: URL, target: File) {
             }
     }
     println("下载完成")
-    println("====================")
+    printHyphen()
+}
+
+private fun printHyphen() = println("--------------------")
+
+private fun printComplete() {
+    printHyphen()
+    println("    程序执行完毕")
+    printHyphen()
     println()
 }
 
-fun getNum(num: Int) = if (num < 10) "00$num" else if (num < 100) "0$num" else "$num"
+private fun getNum(num: Int) = if (num < 10) "00$num" else if (num < 100) "0$num" else "$num"
 
-fun getName(num: Int, ext: String) = getNum(num).plus(".$ext")
+private fun getName(num: Int, ext: String) = getNum(num).plus(".$ext")
